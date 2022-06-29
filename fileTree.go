@@ -1,27 +1,19 @@
-package FileWalker
+package FileManager
 
 import (
 	"io/fs"
-	"sync"
 )
 
 type node struct {
-	name      string
-	children  []*node
-	isMark    bool
-	visitTime int
-	isDir     bool
-	lock      sync.Mutex
+	name     string
+	children []*node
+	isDir    bool
 }
 
 func newNode(name string, isdir bool) *node {
-	var c []*node
 	return &node{
-		name:      name,
-		children:  c,
-		isMark:    false,
-		visitTime: 0,
-		isDir:     isdir,
+		name:  name,
+		isDir: isdir,
 	}
 }
 
@@ -39,21 +31,11 @@ func (n *node) validChildrenList() ([]*node, []*node) {
 	var fileList []*node
 	var dirList []*node
 	for _, child := range n.children {
-		if !child.isMark {
-			if child.isDir {
-				dirList = append(dirList, child)
-			} else {
-				fileList = append(fileList, child)
-			}
+		if child.isDir {
+			dirList = append(dirList, child)
+		} else {
+			fileList = append(fileList, child)
 		}
 	}
 	return fileList, dirList
-}
-
-type fileTree struct {
-	root *node
-}
-
-func newFileTree(node *node) *fileTree {
-	return &fileTree{root: node}
 }
