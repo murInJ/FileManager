@@ -76,3 +76,15 @@ func (m *FileManager) onWatchFile() {
 	}
 
 }
+
+func (m *FileManager) GetChangeFileList() []string {
+	var l []string
+	for k := range m.changeFileMap {
+		l = append(l, k)
+	}
+	return l
+}
+
+func (m *FileManager) CleanChangeFileList() {
+	m.changeFileMap = make(map[string]int)
+}
