@@ -27,7 +27,8 @@ func (m *FileManager) SetDebug(debug bool) {
 	m.isdebug = debug
 }
 
-func NewFileManager(root string, maxWorker int) *FileManager {
+func NewFileManager(root string) *FileManager {
+	maxWorker := 10
 	node := newNode(root, true)
 	return &FileManager{
 		fileTree:       newFileTree(node),
@@ -43,24 +44,17 @@ func (m *FileManager) getfile() {
 	for {
 		select {
 		case file := <-m.fileChannel:
+			if file == m.fileTree.root.name {
+				m.readChannel <- 0
+				return
+			}
 			m.FileList = append(m.FileList, file)
 			if m.isdebug {
 				fmt.Printf("%s add path %s\n",
 					color.New(color.FgHiCyan).Sprintf("FileWalker:"),
 					color.New(color.FgYellow).Sprintf(file))
 			}
-		case end := <-m.readChannel:
-			if end == 0 {
-				for file := range m.fileChannel {
-					m.FileList = append(m.FileList, file)
-					if m.isdebug {
-						fmt.Printf("%s add path %s\n",
-							color.New(color.FgHiCyan).Sprintf("FileWalker:"),
-							color.New(color.FgYellow).Sprintf(file))
-					}
-				}
-				break
-			}
+
 		}
 
 	}
@@ -81,10 +75,10 @@ func (m *FileManager) GetFileList() {
 				walker := newWalker(m)
 				walker.walk()
 			}
-		default:
-			if m.activeWorker == 0 {
-				m.readChannel <- 0
-				break
+
+		case sign := <-m.readChannel:
+			if sign == 0 {
+				return
 			}
 		}
 	}
@@ -115,7 +109,7 @@ func (w *walker) walk() {
 		w.currentNode.lock.Lock()
 		fileList, err := ioutil.ReadDir(prefix)
 		if err != nil {
-			log.Println("wailker error: ", err.Error())
+			log.Println("walker error: ", err.Error())
 		}
 		w.currentNode.expand(fileList)
 		validFileList, validDirList := w.currentNode.validChildrenList()
