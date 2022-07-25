@@ -23,7 +23,7 @@ func (n *node) expand(fileList []fs.FileInfo) {
 	}
 
 	for _, file := range fileList {
-		n.children = append(n.children, newNode(n.name+"/"+file.Name(), file.IsDir()))
+		n.children = append(n.children, newNode(n.name+"\\"+file.Name(), file.IsDir()))
 	}
 }
 

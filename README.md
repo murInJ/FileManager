@@ -7,6 +7,7 @@ MurInj
 ## function
 - file walker
 - file state watch
+- export FileList
 
 ## install
 ```shell
