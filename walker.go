@@ -34,7 +34,7 @@ func (w *walker) walk() {
 		w.appendFile(file.name)
 		if w.fileManager.isdebug {
 			fmt.Printf("%s add path %s\n",
-				color.New(color.FgHiCyan).Sprintf("FileWalker:"),
+				color.New(color.FgHiCyan).Sprintf("FileManager:"),
 				color.New(color.FgYellow).Sprintf(file.name))
 		}
 	}

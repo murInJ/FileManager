@@ -74,7 +74,7 @@ func (m *FileManager) onWatchFile() {
 			m.changeFileMap[event.Name] = event
 			if m.isdebug {
 				fmt.Printf("%s %s %s\n",
-					color.New(color.FgHiCyan).Sprintf("FileWalker:"),
+					color.New(color.FgHiCyan).Sprintf("FileManager:"),
 					color.New(color.FgGreen).Sprintf(event.Op.String()),
 					color.New(color.FgYellow).Sprintf(event.Name))
 
